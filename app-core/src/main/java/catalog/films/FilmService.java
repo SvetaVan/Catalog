@@ -12,7 +12,7 @@ public interface FilmService {
 
     void delete(int id);
 
-    void deleteAll();
+    void deleteAll();//very important comment
 
     Film findByName(String name);
 }
