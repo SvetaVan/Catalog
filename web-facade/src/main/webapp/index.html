@@ -1,0 +1,138 @@
+<html>
+<head>
+    <title>Hello</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+
+<div class="container" >
+    <form action="services/users/save" method="get">
+
+        <label>
+            User Name:
+            <input id="name" type="text" name="name">
+        </label>
+        <br/>
+        <label>
+            Password:
+            <input id="password" type="text" name="password">
+        </label>
+
+        <br><br>
+
+
+        <input type="button" onclick="addNewUser()" value="add">
+    </form>
+</div>
+
+<div id="ref">
+
+</div>
+
+<script>
+
+
+    function createCell(row, value) {
+        var cell = document.createElement("td");
+        var cellText = document.createTextNode(value);
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+    }
+
+    function createDel(row, element) {
+        var cell = document.createElement("td");
+
+        var button = document.createElement("button");
+        $(button)
+           .append( '<i class="fa fa-trash"></i>')
+           .addClass("delButton")
+           .click(function () {
+               $.ajax({
+                   url: "services/users/delete",
+                   type: "GET",
+                   data: {"id": element.id},
+                   success: function () {
+                       refreshTable();
+                   }
+               });
+           }
+       );
+
+        cell.appendChild(button)
+        row.appendChild(cell);
+    }
+
+
+    function createHeader(table, values) {
+        var row = document.createElement("tr");
+        values.forEach(function (entry) {
+            var cell = document.createElement("th");
+            var cellText = document.createTextNode(entry);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+        });
+        table.appendChild(row);
+    }
+
+    function drawTable(json) {
+        // get the reference for the body
+        var div1 = document.getElementById('ref');
+
+        $("#ref_table").remove();
+
+
+        // creates a <table> element
+        var tbl = document.createElement("table");
+        tbl.setAttribute("id", "ref_table")
+
+        createHeader(tbl, ["id", "name", "password", ""]);
+
+        json.forEach(function (entry) {
+            var row = document.createElement("tr");
+            createCell(row, entry.id);
+            createCell(row, entry.name);
+            createCell(row, entry.password);
+            createDel(row, entry);
+            tbl.appendChild(row);
+        });
+
+        div1.appendChild(tbl);
+    }
+
+    function refreshTable() {
+        $.get(
+            "services/users/load",
+            function (data, status) {
+                drawTable(data);
+            }
+        );
+    }
+
+
+    function addNewUser() {
+        var nameEl = $("#name").val();
+        var passEl = $("#password").val();
+
+
+        $.ajax({
+            url: "services/users/save",
+            type: "GET",
+            data: {"name": nameEl, "password": passEl},
+            success: function () {
+                refreshTable();
+            }
+        });
+    }
+
+    window.onload = function () {
+        refreshTable();
+    };
+
+
+</script>
+
+</body>
+</html>

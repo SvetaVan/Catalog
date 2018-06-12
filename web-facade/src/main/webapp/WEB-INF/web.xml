@@ -24,7 +24,7 @@
 
     <servlet-mapping>
         <servlet-name>Hello</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
 
     <filter>
