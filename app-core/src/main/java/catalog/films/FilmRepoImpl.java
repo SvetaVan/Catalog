@@ -1,6 +1,7 @@
-package catalog.users;
+package catalog.films;
 
 import catalog.CatalogRuntimeException;
+import catalog.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,51 +14,50 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.List;
 
-@Component
-public class UserRepoImpl implements UsersRepo {
 
-    private static final RowMapper<User> USER_ROW_MAPPER = (ResultSet rs, int rowNum) -> new User(
+@Component
+public class FilmRepoImpl implements FilmRepo {
+
+    private static final RowMapper<Film> FILM_ROW_MAPPER = (ResultSet rs, int rowNum) -> new Film(
             rs.getInt("id"),
             rs.getString("name"),
-            rs.getString("password")
+            rs.getString("genre"),
+            rs.getString("description"),
+            rs.getString("picture_url")//???correct name
     );
 
-    private static final String SAVE_QUERY = "insert into users (name, password) values (:name, :password)";
-    private static final String LOAD_ALL = "select id, name, password from users";
-    private static final String DELETE_ALL = "delete from users";
-    private static final String DELETE_BY_ID = "delete from users where id = :id";
-    private static final String FIND_BY_NAME = "select id, name, password from users where name = :name";
+
+    private static final String SAVE_QUERY = "insert into films (name, genre, description, picture_url) values (:name, :genre, :description, :picture_url)";
+    private static final String LOAD_ALL = "select * from films";
+    private static final String DELETE_ALL = "delete from films";
+    private static final String DELETE_BY_ID = "delete from films where id = :id";
+    private static final String FIND_BY_NAME = "select * description from films where name = :name";
+
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserRepoImpl(DataSource dataSource) {
+    public FilmRepoImpl(DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-
     @Override
-    public List<User> loadAll() {
-        return jdbcTemplate.query(LOAD_ALL,
-                USER_ROW_MAPPER
-        );
-    }
-
-    @Override
-    public User save(User user) {
+    public Film save(Film film) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 SAVE_QUERY,
                 new MapSqlParameterSource()
-                        .addValue("name", user.getName())
-                        .addValue("password", user.getPassword()),
+                        .addValue("name", film.getName())
+                        .addValue("genre", film.getGenre())
+                        .addValue("description", film.getDecription())
+                        .addValue("picture_url", film.getPictureURL()),
                 keyHolder
         );
         Number key = keyHolder.getKey();
         if (key == null) {
-            throw new CatalogRuntimeException("The key wasn't generated, insert failed on user.name: " + user.getName());
+            throw new CatalogRuntimeException("The key wasn't generated, insert failed on film.name: " + film.getName());
         }
-        user.setId(key.intValue());
-        return user;
+        film.setId(key.intValue());
+        return film;
     }
 
     @Override
@@ -76,11 +76,18 @@ public class UserRepoImpl implements UsersRepo {
     }
 
     @Override
-    public User findByName(String name) {
+    public List<Film> loadAll() {
+        return jdbcTemplate.query(LOAD_ALL,
+                FILM_ROW_MAPPER
+        );
+    }
+
+    @Override
+    public Film findByName(String name) {
         return jdbcTemplate.queryForObject(FIND_BY_NAME,
                 new MapSqlParameterSource()
                         .addValue("name", name),
-                USER_ROW_MAPPER
+                FILM_ROW_MAPPER
         );
     }
 }

@@ -3,7 +3,6 @@ package catalog.webfacade;
 
 import catalog.users.User;
 import catalog.users.UserService;
-import catalog.users.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +10,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-public class Controller {
+public class UsersController {
 
 
     private UserService userService;
 
     @Autowired
-    public Controller(UserService userService) {
+    public UsersController(UserService userService) {
         this.userService = userService;
     }
 
@@ -28,8 +27,8 @@ public class Controller {
         return userService.loadAll();
     }
 
-    @GetMapping("/save")
-    public void save(@RequestParam("name") String name, @RequestParam("password") int password) {
+    @PostMapping("/save")
+    public void save(@RequestParam("name") String name, @RequestParam("password") String password) {
         userService.save(new User(name, password));
     }
 
