@@ -27,6 +27,7 @@ public class UserRepoImpl implements UsersRepo {
     private static final String DELETE_ALL = "delete from users";
     private static final String DELETE_BY_ID = "delete from users where id = :id";
     private static final String FIND_BY_NAME = "select id, name, password from users where name = :name";
+    private static final String FIND_BY_ID = "select id, name, password from users where id = :id";
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -80,6 +81,14 @@ public class UserRepoImpl implements UsersRepo {
         return jdbcTemplate.queryForObject(FIND_BY_NAME,
                 new MapSqlParameterSource()
                         .addValue("name", name),
+                USER_ROW_MAPPER
+        );
+    }
+    @Override
+    public User findById(int id) {
+        return jdbcTemplate.queryForObject(FIND_BY_ID,
+                new MapSqlParameterSource()
+                        .addValue("id", id),
                 USER_ROW_MAPPER
         );
     }

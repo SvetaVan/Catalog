@@ -15,5 +15,6 @@ public interface UsersRepo {
 
     User findByName(String name);
 
+    User findById(int id);
 
 }

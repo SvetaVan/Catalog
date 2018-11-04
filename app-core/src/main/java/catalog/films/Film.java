@@ -1,30 +1,36 @@
 package catalog.films;
 
+import java.sql.ResultSet;
 import java.util.Objects;
 
 public class Film {
     private int id;
     private String name;
-    private String genre;
-    private String decription;
+    private String genre; // lets make enum
+    private String description;
     private String pictureURL;
 
-    public Film() {
+    public Film (ResultSet resultSet, int number){
+
     }
 
+    public Film(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-    public Film(String name, String genre, String decription, String pictureURL) {
+    public Film(String name, String genre, String description, String pictureURL) {
         this.name = name;
         this.genre = genre;
-        this.decription = decription;
+        this.description = description;
         this.pictureURL = pictureURL;
     }
 
-    public Film(int id, String name, String genre, String decription, String pictureURL) {
+    public Film(int id, String name, String genre, String description, String pictureURL) {
         this.id = id;
         this.name = name;
         this.genre = genre;
-        this.decription = decription;
+        this.description = description;
         this.pictureURL = pictureURL;
     }
 
@@ -48,8 +54,8 @@ public class Film {
         return genre;
     }
 
-    public String getDecription() {
-        return decription;
+    public String getDescription() {
+        return description;
     }
 
     public String getPictureURL() {
@@ -64,14 +70,14 @@ public class Film {
         return id == film.id &&
                 Objects.equals(name, film.name) &&
                 Objects.equals(genre, film.genre) &&
-                Objects.equals(decription, film.decription) &&
+                Objects.equals(description, film.description) &&
                 Objects.equals(pictureURL, film.pictureURL);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, genre, decription, pictureURL);
+        return Objects.hash(id, name, genre, description, pictureURL);
     }
 
 
@@ -81,7 +87,7 @@ public class Film {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", genre='" + genre + '\'' +
-                ", decription='" + decription + '\'' +
+                ", description='" + description + '\'' +
                 ", pictureURL='" + pictureURL + '\'' +
                 '}';
     }

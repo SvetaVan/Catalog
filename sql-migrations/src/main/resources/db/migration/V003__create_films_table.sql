@@ -10,9 +10,9 @@ Create Table films (
 
 create table film_user_xref(
   id int(11) NOT NULL AUTO_INCREMENT,
-  film_id int(11) NOT NULL,
+  film int(11) NOT NULL,
   user_id int(11) NOT NULL,
   PRIMARY KEY (id),
-  foreign key (film_id) references films(id),
+  foreign key (film) references films(id),
   foreign key (user_id) references users(id)
 )
